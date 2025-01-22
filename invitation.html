@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jai Jawan Jai Kisan LokShakti Sangathan -Ayodhya Chintan Shivir</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 30px;
+            background: linear-gradient(155deg, #5e65e6, #5ee6b9);
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        h1 {
+            color: #343a40;
+        }
+        .input-group {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        canvas {
+            border: 1px solid #ced4da;
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: left;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Jai Jawan Jai Kisan LokShakti Sangathan -Ayodhya Chintan Shivir</h1>
+
+    <div class="input-group">
+        <label for="userName">Name (नाम): </label>
+        <input type="text" id="userName" placeholder="Enter your name">
+    </div>
+
+    <div class="input-group">
+        <label for="userPost">Post (पद): </label>
+        <input type="text" id="userPost" placeholder="Enter your post">
+    </div>
+
+    <div class="input-group">
+        <label for="qrCode">Upload Your Photo (अपना फोटो अपलोड करें): </label>
+        <input type="file" id="qrCode" accept="image/*">
+    </div>
+
+    <button id="generateBtn">Generate Invitation</button>
+    <br>
+    <canvas id="outputCanvas" width="500" height="700"></canvas>
+    <br>
+    <button id="downloadBtn" style="display: none;">Download Invitation</button>
+
+    <script>
+        const userNameInput = document.getElementById('userName');
+        const userPostInput = document.getElementById('userPost');
+        const qrCodeInput = document.getElementById('qrCode');
+        const generateBtn = document.getElementById('generateBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const canvas = document.getElementById('outputCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const backgroundImage = new Image();
+        backgroundImage.src = 'invitation2.png';
+
+        let qrImage = null;
+
+        qrCodeInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    qrImage = new Image();
+                    qrImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        generateBtn.addEventListener('click', () => {
+            if (!qrImage) {
+                alert('Please upload a QR code.');
+                return;
+            }
+
+            const userName = userNameInput.value.trim();
+            const userPost = userPostInput.value.trim();
+
+            if (!userName || !userPost) {
+                alert('Please fill in all the details.');
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            
+            ctx.drawImage(qrImage, 40, 580, 100, 100);
+            
+            ctx.textAlign = 'left';
+            ctx.fillText(`नाम: ${userName}`, 262, 620);
+            ctx.fillText(`पद: ${userPost}`, 262, 650);
+
+            downloadBtn.style.display = 'inline-block';
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const link1 = document.createElement('a');
+            link1.download = 'invitation1.png';
+            link1.href = 'invitation1.png';
+            link1.click();
+            
+            const link2 = document.createElement('a');
+            link2.download = 'invitation2.png';
+            link2.href = canvas.toDataURL('image/png');
+            link2.click();
+        });
+    </script>
+</body>
+</html>
